@@ -1173,53 +1173,6 @@ void Touch_sensing() {
   // delay(100);
 }
 
-/*****************************************************************************************************************************加速度を検知する関数***************************************************************************************************************/
-/*void Accel_sensing() {
-  int i ;
-  long x, y, z;
-  //50回センサ値を読み込んで平均を算出
-  x = y = z = 0;
-  for (i = 0 ; i < 50 ; i++) {
-    delay(10);
-    //マルチプレクサ出力切り換え
-    digitalWrite( 27, HIGH );
-    digitalWrite( 28, LOW );
-    digitalWrite( 29, LOW );
-    delay(10);
-    x = x + analogRead(0) ; // Ｘ軸
-    delay(10);
-    //マルチプレクサ出力切り換え
-    digitalWrite( 27, LOW );
-    digitalWrite( 28, HIGH );
-    digitalWrite( 29, LOW );
-    delay(10);
-    y = y + analogRead(0) ; // Ｙ軸
-    delay(10);
-    //マルチプレクサ出力切り換え
-    digitalWrite( 27, LOW );
-    digitalWrite( 28, LOW );
-    digitalWrite( 29, HIGH );
-    delay(10);
-    z = z + analogRead(0) ; // Ｚ軸
-  }
-  x = x / 50 ;
-  y = y / 50 ;
-  z = z / 50 ;
-  int rotateX = (x - 277) / 2.48 - 90; //角度を求める式
-  Serial.print("X:") ;
-  //Serial.print(x) ;
-  Serial.print(" ") ;
-  Serial.print(rotateX - 10) ;
-  Serial.print("度　") ;
-  int rotateY = (y - 277) / 2.48 - 90;
-  Serial.print(" Y:") ;
-  //Serial.print(y) ;
-  Serial.print(" ") ;
-  Serial.print(rotateY) ;
-  Serial.print("度　") ;
-  delay(50) ;
-}*/
-
 /*******************************************感情表現*******************************************/
 int nn;
 
@@ -1668,22 +1621,6 @@ void gameA_start() {
 
 }
 
-void gameA_camera() {
-  Execute(execFlag, imageno);
-  if ( FACE_COUNT == 1) {
-    if ( 150 <= HAPPINESS && HAPPINESS <= 255 ) { //得られたデータを２or３分類で場合分け
-      A_happy++;
-    }
-    else if (0 <= HAPPINESS && HAPPINESS < 150) {
-      A_un_happy++;
-    }
-    kaisuu++;
-  }
-  else {
-    kaisuu++;
-  }
-  kaisuu = 0;
-}
 
 void gameA() {
   int tp;
@@ -1708,9 +1645,6 @@ void gameA() {
     mode_select_frag = 0;
     gameA_start();
 
-    mySerial.listen();
-    gameA_camera();
-
     mp3.listen();
     SpecifyfolderPlay(8, 47); //mp3再生「色を触ってね」
     delay(2000);
@@ -1718,8 +1652,6 @@ void gameA() {
     while ( nA < 3 ) {
       mp3.listen();
       SpecifyfolderPlay(8, touch_place_sound); //mp3再生（フォルダ，番号）
-      mySerial.listen();
-      gameA_camera();
 
       while ( nnA < 250 ) {
         Touch_sensing();
@@ -1746,8 +1678,6 @@ void gameA() {
         delay(1500);
         kaisuu_true++;
         feel_happy_2();  //喜ぶ2
-        mySerial.listen();
-        gameA_camera();
         touch_sensing_number = 0;
       }
 
@@ -1757,8 +1687,6 @@ void gameA() {
         delay(1500);
         kaisuu_false++;
         feel_sad_2();//悲しむ2
-        mySerial.listen();
-        gameA_camera();
         touch_sensing_number = 0;
       }
     }
@@ -1766,9 +1694,6 @@ void gameA() {
       //接触しなかったら
       kaisuu_false++;
       feel_sad_3();//悲しむ3
-
-      mySerial.listen();
-      gameA_camera();
       touch_sensing_number = 0;
     }
   }
@@ -1784,23 +1709,6 @@ void gameA() {
 }
 
 /********************************************************************************************************遊びB　音階ドレミ********************************************************************************************************/
-
-void gameB_camera() {
-  Execute(execFlag, imageno);
-  if ( FACE_COUNT == 1) {
-    if ( 150 <= HAPPINESS && HAPPINESS <= 255 ) { //得られたデータを２or３分類で場合分け
-      B_happy++;
-    }
-    else if (0 <= HAPPINESS && HAPPINESS < 150) {
-      B_un_happy++;
-    }
-    kaisuu++;
-  }
-  else {
-    kaisuu++;
-  }
-  kaisuu = 0;
-}
 
 void gameB() {
 
@@ -1826,16 +1734,11 @@ void gameB() {
     digitalWrite(PIN_IN2, HIGH);
     digitalWrite(PIN_IN3, LOW);
     digitalWrite(PIN_IN4, HIGH);
-    mySerial.listen();
-    gameB_camera();
 
     while ( nB < 3 ) {
       mp3.listen();
       SpecifyfolderPlay(8, 40); //mp3再生（フォルダ，番号）//「好きなところを触ってね」
       delay(1000);
-
-      mySerial.listen();
-      gameB_camera();
 
       while ( nnB < 250 ) {
         Touch_sensing();
@@ -1859,8 +1762,6 @@ void gameB() {
       unit();
       touch_count++;
       delay(1000);
-      mySerial.listen();
-      gameB_camera();
       LED_STOP();
       touch_sensing_number = 0;
       delay(500);
@@ -1882,23 +1783,6 @@ void gameB() {
 }
 
 /********************************************************************************************************遊びC  音に合わせて踊る（5曲中1曲ランダムに流れる）********************************************************************************************************/
-
-void gameC_camera() {
-  Execute(execFlag, imageno);
-  if ( FACE_COUNT == 1) {
-    if ( 150 <= HAPPINESS && HAPPINESS <= 255 ) { //得られたデータを２or３分類で場合分け
-      C_happy++;
-    }
-    else if (0 <= HAPPINESS && HAPPINESS < 150) {
-      C_un_happy++;
-    }
-    kaisuu++;
-  }
-  else {
-    kaisuu++;
-  }
-  kaisuu = 0;
-}
 
 void gameC() {
   int music_servo;
@@ -2048,17 +1932,13 @@ void gameC() {
   myservo5.detach();
   myservo3.detach();
 
-  mySerial.listen();
-  for (nC = 0; nC < 5; nC++) {
-    gameC_camera();
-  }
-
   LED_STOP();
   teisi();
 }
 
-  /********************************************************************************************************遊びD (A_advanced  3回連続で触る)********************************************************************************************************/
-/*void gameD_start() {   //DCモータとLED起動
+/********************************************************************************************************遊びD (riddle, なぞなぞ)********************************************************************************************************/
+void gameD_start() {
+  //DCモータとLED起動
   //頭：赤　身体：緑　右腕：紫　尻尾：青　左腕：黄
 
   //左腕
@@ -2106,471 +1986,231 @@ void gameC() {
 
 }
 
-void gameD_camera() {
-  Execute(execFlag, imageno);
-  if ( FACE_COUNT == 1) {
-    if ( 150 <= HAPPINESS && HAPPINESS <= 255 ) { //得られたデータを２or３分類で場合分け
-      D_happy++;
-    }
-    else if (0 <= HAPPINESS && HAPPINESS < 150) {
-      D_un_happy++;
-    }
-    kaisuu++;
-  }
-  else {
-    kaisuu++;
-  }
-  kaisuu = 0;
-}
-
-
 void gameD() {
   int tp;
   int kaisuu_true = 0;
   int kaisuu_false = 0;
   int gameD_count;
   int touch_game_score = 0;
-  int nA = 0;
-  int nnA = 0;
-  int touch_place1;
-  int touch_place2;
-  int touch_place3;
-  int touch_place1_sound;
-  int touch_place2_sound;
-  int touch_place3_sound;
-  int touch_place1_place;
-  int touch_place2_place;
-  int touch_place3_place;
-
+  int nD = 0;
+  int nnD = 0;
+  int riddle_num;
 
   mySerial.listen();
   HVC_GetVersion();
 
   for (gameD_count = 0; gameD_count < 3; gameD_count ++) {
-    //   1
-    touch_place1 = random( 6 );
-    touch_place2 = random( 6 );
-    touch_place3 = random( 6 );
 
-    touch_place1_sound = touch_place1 + 42;
-    touch_place2_sound = touch_place2 + 42;
-    touch_place3_sound = touch_place3 + 42;
-    touch_place1_place = touch_place1 + 4;
-    touch_place2_place = touch_place2 + 4;
-    touch_place3_place = touch_place3 + 4;
-
-
-    mode_select_frag = 0;
-    gameD_start();
-
-    mySerial.listen();
-    gameD_camera();
+    riddle_num = random( 9 );
+    gameA_start();
 
     mp3.listen();
     SpecifyfolderPlay(8, 47); //mp3再生「色を触ってね」
     delay(2000);
 
-    while ( nA < 3 ) {
+    while ( nD < 3 ) {
       mp3.listen();
-      SpecifyfolderPlay(8, touch_place1_sound); //mp3再生（フォルダ，番号）
-      delay(3000);
-      mp3.listen();
-      SpecifyfolderPlay(8, touch_place2_sound); //mp3再生（フォルダ，番号）
-      delay(3000);
-      mp3.listen();
-      SpecifyfolderPlay(8, touch_place3_sound); //mp3再生（フォルダ，番号）
-      delay(1000);
+      SpecifyfolderPlay(8, touch_place_sound); //mp3再生（フォルダ，番号）
 
-      mySerial.listen();
-      gameD_camera();
-
-      while ( nnA < 250 ) {
+      while ( nnD < 250 ) {
         Touch_sensing();
         if (mode_select_frag == 1) {
-          nA = 3;
+          nD = 3;
           break;
         }
-        nnA++;
+        nnD++;
       }
 
-      nnA = 0;
-      nA++;
+      nnD = 0;
+      nD++;
     }
-    nA = 0;
-
-    if (mode_select_frag == 1) {
-      //感圧センサでモード分岐
-      if (touch_sensing_number == touch_place1_place) {
-        mp3.listen();
-        SpecifyfolderPlay(8, 49);//「◎」
-        touch_sensing_number = 0;
-        delay(3000);
-        Touch_sensing();
-
-        if (touch_sensing_number == touch_place2_place) {
-          mp3.listen();
-          SpecifyfolderPlay(8, 49);//「◎」
-          touch_sensing_number = 0;
-          delay(3000);
-          Touch_sensing();
-
-          if (touch_sensing_number == touch_place3_place) {
-            mp3.listen();
-            SpecifyfolderPlay(8, 49);//「◎」
-            delay(3000);
-            mp3.listen();
-            SpecifyfolderPlay(8, 48);//「正解！」
-            delay(1500);
-            kaisuu_true++;
-            feel_happy_2();  //喜ぶ2
-            mySerial.listen();
-            gameA_camera();
-            touch_sensing_number = 0;
-          }
-          else {
-            mp3.listen();
-            SpecifyfolderPlay(8, 50);//「×」
-            delay(1500);
-            kaisuu_false++;
-            feel_sad_2();//悲しむ2
-            mySerial.listen();
-            gameA_camera();
-            touch_sensing_number = 0;
-          }
-        }
-
-        else {
-          mp3.listen();
-          SpecifyfolderPlay(8, 50);//「×」
-          delay(1500);
-          kaisuu_false++;
-          feel_sad_2();//悲しむ2
-          mySerial.listen();
-          gameA_camera();
-          touch_sensing_number = 0;
-        }
-      }
-
-      else {
-        mp3.listen();
-        SpecifyfolderPlay(8, 50);//「×」
-        delay(1500);
-        kaisuu_false++;
-        feel_sad_2();//悲しむ2
-        mySerial.listen();
-        gameA_camera();
-        touch_sensing_number = 0;
-      }
-    }
-    if ( kaisuu_true > 2 ) {
-      feel_happy_1();
-    }
-    else if (kaisuu_false > 2 ) {
-      feel_sad_1();
-    }
-    else {
-      delay(50);
-    }
+    nD = 0;
   }
 }
-*/
-/*
-  //   2
-  if (touch_place == 1){
-  mode_select_frag = 0;
-    gameA_start();
 
-    mySerial.listen();
-    gameA_camera();
+/*****************************************************************************************************************************遊びE (gokko, ごっこ遊び)***************************************************************************************************************/
+void gameE_start() {
+  //DCモータとLED起動
+  //頭：赤　身体：緑　右腕：紫　尻尾：青　左腕：黄
+
+  //左腕
+  RGBLED1.setPixelColor( 0, RGBLED1.Color( hana[8][0] , hana[8][1], hana[8][2]) );
+  RGBLED2.setPixelColor( 0, RGBLED2.Color( hana[8][0] , hana[8][1], hana[8][2]) );
+  RGBLED3.setPixelColor( 0, RGBLED3.Color( hana[8][0] , hana[8][1], hana[8][2]) );
+
+  //指定なし
+  RGBLED4.setPixelColor( 0, RGBLED4.Color( hana[4][0] , hana[4][1], hana[4][2]) );
+
+  //尻尾
+  RGBLED5.setPixelColor( 0, RGBLED5.Color( hana[3][0] , hana[3][1], hana[3][2]) );
+  RGBLED6.setPixelColor( 0, RGBLED6.Color( hana[3][0] , hana[3][1], hana[3][2]) );
+
+  //身体・中
+  RGBLED7.setPixelColor( 0, RGBLED7.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED8.setPixelColor( 0, RGBLED8.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED9.setPixelColor( 0, RGBLED9.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+
+  //頭
+  RGBLED10.setPixelColor( 0, RGBLED10.Color( hana[2][0] , hana[2][1], hana[2][2]) );
+  RGBLED11.setPixelColor( 0, RGBLED11.Color( hana[2][0] , hana[2][1], hana[2][2]) );
+
+  //右腕
+  RGBLED12.setPixelColor( 0, RGBLED12.Color( hana[7][0] , hana[7][1], hana[7][2]) );
+  RGBLED13.setPixelColor( 0, RGBLED13.Color( hana[7][0] , hana[7][1], hana[7][2]) );
+  RGBLED14.setPixelColor( 0, RGBLED14.Color( hana[7][0] , hana[7][1], hana[7][2]) );
+
+  //身体・上下
+  RGBLED15.setPixelColor( 0, RGBLED15.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED16.setPixelColor( 0, RGBLED16.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED17.setPixelColor( 0, RGBLED17.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED18.setPixelColor( 0, RGBLED18.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED19.setPixelColor( 0, RGBLED19.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED20.setPixelColor( 0, RGBLED20.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+
+  LED_START();
+
+  analogWrite(PIN_VREF, 60);
+  analogWrite(PIN_VREF2, 180);
+  digitalWrite(PIN_IN1, LOW);
+  digitalWrite(PIN_IN2, HIGH);
+  digitalWrite(PIN_IN3, LOW);
+  digitalWrite(PIN_IN4, HIGH);
+
+}
+
+void gameE() {
+  int tp;
+  int kaisuu_true = 0;
+  int kaisuu_false = 0;
+  int gameE_count;
+  int touch_game_score = 0;
+  int nE = 0;
+  int nnE = 0;
+  int riddle_num;
+
+  mySerial.listen();
+  HVC_GetVersion();
+
+  for (gameE_count = 0; gameE_count < 3; gameE_count ++) {
+
+    riddle_num = random( 9 );
+    gameE_start();
 
     mp3.listen();
-    SpecifyfolderPlay(8, 47); //mp3再生
+    SpecifyfolderPlay(8, 47); //mp3再生「色を触ってね」
     delay(2000);
 
-    while( nA < 3 ){
-    mp3.listen();
-    SpecifyfolderPlay(8, 46); //mp3再生（フォルダ，番号）//「緑色」
-    //delay(1000);
-    mySerial.listen();
-    gameA_camera();
+    while ( nE < 3 ) {
+      mp3.listen();
+      SpecifyfolderPlay(8, touch_place_sound); //mp3再生（フォルダ，番号）
 
-      while( nnA < 250 ){
+      while ( nnE < 250 ) {
         Touch_sensing();
-      if(mode_select_frag == 1){
-            nA = 3;
-            break;
-          }
-          nnA++;
+        if (mode_select_frag == 1) {
+          nE = 3;
+          break;
+        }
+        nnE++;
       }
 
-         nnA = 0;
-          nA++;
+      nnE = 0;
+      nE++;
     }
-  nA = 0;
+    nE = 0;
+  }
+}
 
-  if(mode_select_frag==1){
-    //感圧センサでモード分岐
-  if (touch_sensing_number == 9 || 8){ //身体に接触出来たら
-  mp3.listen();
-  SpecifyfolderPlay(8, 49);
-  delay(1500);
-  SpecifyfolderPlay(8, 48);//「正解！」
-  delay(1500);
-  kaisuu_true++;
-  feel_happy_2();  //喜ぶ2
+/*****************************************************************************************************************************遊びF (yomikikase, 読み聞かせ)***************************************************************************************************************/
+void gameF_start() {
+  //DCモータとLED起動
+  //頭：赤　身体：緑　右腕：紫　尻尾：青　左腕：黄
+
+  //左腕
+  RGBLED1.setPixelColor( 0, RGBLED1.Color( hana[8][0] , hana[8][1], hana[8][2]) );
+  RGBLED2.setPixelColor( 0, RGBLED2.Color( hana[8][0] , hana[8][1], hana[8][2]) );
+  RGBLED3.setPixelColor( 0, RGBLED3.Color( hana[8][0] , hana[8][1], hana[8][2]) );
+
+  //指定なし
+  RGBLED4.setPixelColor( 0, RGBLED4.Color( hana[4][0] , hana[4][1], hana[4][2]) );
+
+  //尻尾
+  RGBLED5.setPixelColor( 0, RGBLED5.Color( hana[3][0] , hana[3][1], hana[3][2]) );
+  RGBLED6.setPixelColor( 0, RGBLED6.Color( hana[3][0] , hana[3][1], hana[3][2]) );
+
+  //身体・中
+  RGBLED7.setPixelColor( 0, RGBLED7.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED8.setPixelColor( 0, RGBLED8.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED9.setPixelColor( 0, RGBLED9.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+
+  //頭
+  RGBLED10.setPixelColor( 0, RGBLED10.Color( hana[2][0] , hana[2][1], hana[2][2]) );
+  RGBLED11.setPixelColor( 0, RGBLED11.Color( hana[2][0] , hana[2][1], hana[2][2]) );
+
+  //右腕
+  RGBLED12.setPixelColor( 0, RGBLED12.Color( hana[7][0] , hana[7][1], hana[7][2]) );
+  RGBLED13.setPixelColor( 0, RGBLED13.Color( hana[7][0] , hana[7][1], hana[7][2]) );
+  RGBLED14.setPixelColor( 0, RGBLED14.Color( hana[7][0] , hana[7][1], hana[7][2]) );
+
+  //身体・上下
+  RGBLED15.setPixelColor( 0, RGBLED15.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED16.setPixelColor( 0, RGBLED16.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED17.setPixelColor( 0, RGBLED17.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED18.setPixelColor( 0, RGBLED18.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED19.setPixelColor( 0, RGBLED19.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+  RGBLED20.setPixelColor( 0, RGBLED20.Color( hana[1][0] , hana[1][1], hana[1][2]) );
+
+  LED_START();
+
+  analogWrite(PIN_VREF, 60);
+  analogWrite(PIN_VREF2, 180);
+  digitalWrite(PIN_IN1, LOW);
+  digitalWrite(PIN_IN2, HIGH);
+  digitalWrite(PIN_IN3, LOW);
+  digitalWrite(PIN_IN4, HIGH);
+
+}
+
+void gameF() {
+  int tp;
+  int kaisuu_true = 0;
+  int kaisuu_false = 0;
+  int gameF_count;
+  int touch_game_score = 0;
+  int nF = 0;
+  int nnF = 0;
+  int riddle_num;
 
   mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  else {
-  //他のところに接触したら
-  mp3.listen();
-  SpecifyfolderPlay(8, 50);
-  delay(1500);
-  kaisuu_false++;
-  feel_sad_2();//悲しむ2
+  HVC_GetVersion();
 
-  mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  }
-  else{
-  //接触しなかったら
-  kaisuu_false++;
-  feel_sad_3();//悲しむ3
+  for (gameF_count = 0; gameF_count < 3; gameF_count ++) {
 
-  mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  }
-
-  //   3
-  if (touch_place == 2){
-  mode_select_frag = 0;
-    gameA_start();
-
-    mySerial.listen();
-    gameA_camera();
+    riddle_num = random( 9 );
+    gameF_start();
 
     mp3.listen();
-    SpecifyfolderPlay(8, 47); //mp3再生
+    SpecifyfolderPlay(8, 47); //mp3再生「色を触ってね」
     delay(2000);
 
-    while( nA < 3 ){
-    mp3.listen();
-    SpecifyfolderPlay(8, 42); //mp3再生（フォルダ，番号）//「黄色」
-    //delay(1000);
-    mySerial.listen();
-    gameA_camera();
+    while ( nF < 3 ) {
+      mp3.listen();
+      SpecifyfolderPlay(8, touch_place_sound); //mp3再生（フォルダ，番号）
 
-      while( nnA < 250 ){
+      while ( nnF < 250 ) {
         Touch_sensing();
-      if(mode_select_frag == 1){
-            nA = 3;
-            break;
-          }
-          nnA++;
+        if (mode_select_frag == 1) {
+          nF = 3;
+          break;
+        }
+        nnF++;
       }
 
-          nnA = 0;
-          nA++;
+      nnF = 0;
+      nF++;
     }
-  nA = 0;
-
-  if(mode_select_frag==1){
-    //感圧センサでモード分岐
-  if (touch_sensing_number == 5){ //右腕に接触出来たら
-  mp3.listen();
-  SpecifyfolderPlay(8, 49);
-  delay(1500);
-  SpecifyfolderPlay(8, 48);//「正解！」
-  delay(1500);
-  kaisuu_true++;
-  feel_happy_2();  //喜ぶ2
-
-  mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
+    nF = 0;
   }
-  else{
-  //他のところに接触したら
-  mp3.listen();
-  SpecifyfolderPlay(8, 50);
-  delay(1500);
-  kaisuu_false++;
-  feel_sad_2();//悲しむ2
-
-  mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  }
-  else{
-  //接触しなかったら
-  kaisuu_false++;
-  feel_sad_3();//悲しむ3
-
-  mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  }
-
-  //   4
-  if (touch_place == 3){
-  mode_select_frag = 0;
-    gameA_start();
-    gameA_camera();
-
-    mp3.listen();
-    SpecifyfolderPlay(8, 47); //mp3再生
-    delay(2000);
-
-    while( nA < 3 ){
-    mp3.listen();
-    SpecifyfolderPlay(8, 45); //mp3再生（フォルダ，番号）//「赤色」
-    //delay(1000);
-    mySerial.listen();
-    gameA_camera();
-
-      while( nnA < 250 ){
-        Touch_sensing();
-      if(mode_select_frag == 1){
-            nA = 3;
-            break;
-          }
-          nnA++;
-      }
-
-          nnA = 0;
-          nA++;
-    }
-  nA = 0;
-
-
-  if(mode_select_frag==1){
-    //感圧センサでモード分岐
-  if (touch_sensing_number == 6){ //尻尾に接触出来たら
-  mp3.listen();
-  SpecifyfolderPlay(8, 49);
-  delay(1500);
-  SpecifyfolderPlay(8, 48);//「正解！」
-  delay(1500);
-  kaisuu_true++;
-  feel_happy_2();  //喜ぶ2
-
-  mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  else{
-  //他のところに接触したら
-  mp3.listen();
-  SpecifyfolderPlay(8, 50);
-  delay(1500);
-  kaisuu_false++;
-  feel_sad_2();//悲しむ2
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  }
-  else{
-  //接触しなかったら
-  kaisuu_false++;
-  feel_sad_3();//悲しむ3
-
-  mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  }
-
-  //   5
-  if (touch_place == 4){
-  mode_select_frag = 0;
-    gameA_start();
-
-    mySerial.listen();
-    gameA_camera();
-
-    mp3.listen();
-    SpecifyfolderPlay(8, 47); //mp3再生
-    delay(2000);
-
-    while( nA < 3 ){
-    mp3.listen();
-    SpecifyfolderPlay(8, 43); //mp3再生（フォルダ，番号）//「紫色」
-    //delay(1000);
-    mySerial.listen();
-    gameA_camera();
-
-      while( nnA < 250 ){
-        Touch_sensing();
-      if(mode_select_frag == 1){
-            nA = 3;
-            break;
-          }
-          nnA++;
-      }
-
-          nnA = 0;
-          nA++;
-    }
-  nA = 0;
-
-  if(mode_select_frag==1){
-    //感圧センサでモード分岐
-  if (touch_sensing_number == 4){ //左腕に接触出来たら
-  mp3.listen();
-  SpecifyfolderPlay(8, 49);
-  delay(1500);
-  SpecifyfolderPlay(8, 48);//「正解！」
-  delay(1500);
-  kaisuu_true++;
-  feel_happy_2();  //喜ぶ2
-
-  mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  else {
-  //他のところに接触したら
-  mp3.listen();
-  SpecifyfolderPlay(8, 50);
-  delay(1500);
-  kaisuu_false++;
-  feel_sad_2();//悲しむ2
-
-  mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  }
-  else{
-  //接触しなかったら
-  kaisuu_false++;
-  feel_sad_3();//悲しむ3
-
-  mySerial.listen();
-  gameA_camera();
-  touch_sensing_number = 0;
-  }
-  }
-  }
-  if( kaisuu_true > 2 ){
-  feel_happy_1();
-  }
-  else if (kaisuu_false > 2 ){
-  feel_sad_1();
-  }
-  else{
-  delay(50);
-  }
-  }
-*/
+}
 
 /*****************************************************************************************************************************起動時に実行される関数***************************************************************************************************************/
 void setup() {
