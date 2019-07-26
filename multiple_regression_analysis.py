@@ -4,9 +4,16 @@ import csv
 
 print("start")
 
-path1 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\過去論文遊びの好み.xlsx"
-path2 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\0511camera_matome.csv"
-path3 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\multiple_regression_analysis.csv"
+# for note pc(dynabook)
+'''
+path1 =   
+path2 = 
+path3 = 
+'''
+# for desktop pc(university)
+path1 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\過去論文遊びの好み.xlsx"    
+path2 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\0511camera_matome.csv"
+path3 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\multiple_regression_analysis.csv"
 
 def main():
     analysis_score = []

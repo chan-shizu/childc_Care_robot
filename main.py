@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import raspy_main, csv_matomeru, assesmenting_face_expression
 #import line_camera_faceAPI
 
