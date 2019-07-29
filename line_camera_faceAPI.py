@@ -63,6 +63,14 @@ def line_photo():
     res = requests.post(API, data = post_data, headers = headers, files = files)
     print(res.text)
 
+def line_photo_picture(picture_address):   
+	#通知をLINEに挿入
+    post_data = {'message': '性格推定のグラフです'}
+    headers = {'Authorization': 'Bearer ' + TOKEN}
+    files = {'imageFile':open(picture_address, 'rb')}
+    res = requests.post(API, data = post_data, headers = headers, files = files)
+    print(res.text)
+
 def main():
 	try:
 		while True:
