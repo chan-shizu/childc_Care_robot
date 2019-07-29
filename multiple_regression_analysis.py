@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.externals import joblib
 import csv
+import matplotlib.pyplot as plt
 
 print("start")
 
@@ -100,11 +101,18 @@ def fit_analysis():
         analysis_score.append(predict[0])
         name = "p{}".format(i-6)
         personality_number.append(name)
-        
+
     with open(path5, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(personality_number)
         writer.writerow(analysis_score)
+    
+    plt.bar(personality_number, analysis_score, tick_label=personality_number, align="center")
+    plt.title("child's personality")
+    plt.xlabel("p")
+    plt.ylabel("figures")
+    plt.grid(True)
+    plt.show()
 
 if __name__ == "__main__":
     #main()
