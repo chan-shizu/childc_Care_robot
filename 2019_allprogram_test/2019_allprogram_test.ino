@@ -9,7 +9,7 @@
 #include<EEPROM.h>
 #include <time.h>
 #ifdef __AVR__
-#include <avr/power.h>
+#include <avr/power.h>  //なんかわからんけど省電力とかをしてくれるらしい
 #endif
 
 /************************************************************  各種定義  *********************************************************************/
@@ -22,6 +22,8 @@
 
 int touch_sensing_number = 9;
 int timer = 0;
+float ave_sensorValue1;
+float ave_sensorValue2;
 
 //サーボモータ(Servoオブジェクトの宣言)
 Servo myservo1;
@@ -78,6 +80,8 @@ Servo myservo5;
 #define NUM_LEDS 20
 #define BRIGHTNESS 50 //LED明るさ
 
+#define sensorPin1 A2
+#define sensorPin2 A1
 
 //MP3　ピン番号
 SoftwareSerial mp3(19, 18);
@@ -1008,12 +1012,69 @@ void feel_sad_3() {
   LED_STOP();
   servo_init_posi();
 }
+/**********************************************************************************************************曲げセンサの初期設定**********************************************************************************************************/
+int mage_sensor_setup(){
+  float sum_sensorValue1 = 0;
+  float sum_sensorValue2 = 0;
+  
+  for(int i = 0; i<10; i++)
+  { 
+    // 曲げセンサーの値を取得
+    int sensorValue1 = analogRead(sensorPin1);
+    int sensorValue2 = analogRead(sensorPin2);
+
+    // シリアルモニターに曲げセンサからの値を表示
+    //Serial.print("sensor1 = ");
+    Serial.print(sensorValue1);
+    Serial.print(",");
+    //Serial.print("sensor2 = ");
+    Serial.print(sensorValue2);
+    Serial.println("");  
+    delay(500);
+    sum_sensorValue1 += sensorValue1;
+    sum_sensorValue2 += sensorValue2;
+  }
+
+  ave_sensorValue1 = sum_sensorValue1/10;
+  ave_sensorValue2 = sum_sensorValue2/10;
+  Serial.println("ave_sensorValue1");
+  Serial.println(ave_sensorValue1);
+  Serial.println("ave_sensorValue2");
+  Serial.println(ave_sensorValue2);
+}
+/**********************************************************************************************************曲げセンサ**********************************************************************************************************/
+int mage_sensor(){
+  int sensorValue1;
+  int sensorValue2;
+  for(int i = 0; i<20; i++)
+  { 
+    // 曲げセンサーの値を取得
+    sensorValue1 = analogRead(sensorPin1);
+    sensorValue2 = analogRead(sensorPin2);
+    Serial.println("sensorValue1");
+    Serial.println(sensorValue1);
+    Serial.println("sensorValue2");
+    Serial.println(sensorValue2);
+    
+    if( (sensorValue1-10) > ave_sensorValue1 )
+    {
+      return 1;
+    }
+
+    if( (sensorValue2-10) > ave_sensorValue2 )
+    {
+      return 2;
+    }
+    delay(100);
+  }
+  return 0;
+}
 
 /**********************************************************************************************************遊びの定義**********************************************************************************************************/
 int kaisuu;
 
 /********************************************************************************************************遊びA　タッチ遊び********************************************************************************************************/
-/*void gameA_start() {
+void gameA_start() {
   //DCモータとLED起動
   //頭：赤　身体：緑　右腕：紫　尻尾：青　左腕：黄
 
@@ -1062,7 +1123,6 @@ int kaisuu;
 
 }
 
-
 void gameA() {
   int tp;
   int kaisuu_true = 0;
@@ -1077,37 +1137,58 @@ void gameA() {
 
   //mySerial.listen();
   //HVC_GetVersion();
+  Serial.println("gameA_start!");
 
   for (gameA_count = 0; gameA_count < 3; gameA_count ++) {
 
     touch_place = random( 6 );
     touch_place_sound = touch_place + 42;
-    touch_place_place = touch_place + 4;
+    //touch_place_place = touch_place + 4;
     //mode_select_frag = 0;
     gameA_start();
 
     mp3.listen();
     SpecifyfolderPlay(8, 47); //mp3再生「色を触ってね」
     delay(2000);
+    mp3.listen();
+    SpecifyfolderPlay(8, touch_place_sound); //mp3再生（フォルダ，番号）
 
-    //while ( nA < 3 ) {
+    int i = mage_sensor();
+
+    if(i == 1 || i == 2)
+    {
       mp3.listen();
-      SpecifyfolderPlay(8, touch_place_sound); //mp3再生（フォルダ，番号）
+      SpecifyfolderPlay(8, 49);//「◎」
+      delay(3000);
+      mp3.listen();
+      SpecifyfolderPlay(8, 48);//「正解！」
+      delay(1500);
+      kaisuu_true++;
+      feel_happy_2();  //喜ぶ2
+      touch_sensing_number = 0;
+      kaisuu_true++;
+      Serial.print("gameA_seikai!");
+    }
 
-    //if (mode_select_frag == 1) {
-      //感圧センサでモード分岐
-      //if (touch_sensing_number == touch_place_place) {
-        mp3.listen();
-        SpecifyfolderPlay(8, 49);//「◎」
-        delay(3000);
-        mp3.listen();
-        SpecifyfolderPlay(8, 48);//「正解！」
-        delay(1500);
-        kaisuu_true++;
-        feel_happy_2();  //喜ぶ2
-        touch_sensing_number = 0;
-      }
-}*/
+    else if(i == 0)
+    {
+      mp3.listen();
+      SpecifyfolderPlay(8, 50);//「×」
+      delay(1500);
+      kaisuu_false++;
+      feel_sad_2();//悲しむ2
+      touch_sensing_number = 0;
+      kaisuu_false++;
+      Serial.print("gameA_matigai!");
+    }
+  }
+  if ( kaisuu_true > 2 ) {
+    feel_happy_1();
+  }
+  else if (kaisuu_false > 2 ) {
+    feel_sad_1();
+  }
+}
 
      /* else {
         mp3.listen();
@@ -1137,7 +1218,6 @@ void gameA() {
 }
   }}
 /********************************************************************************************************遊びB　音階ドレミ********************************************************************************************************/
-/*
 void gameB() {
 
   int gameB_count;
@@ -1148,11 +1228,8 @@ void gameB() {
   int nnB = 0;
   int array_B[10][2] = {{0, 0}, {0, 0}, {0, 0}, {0, 0}, {34, 5}, {36, 7}, {35, 6}, {31, 8}, {32, 2}, {33, 3}};
 
-  mySerial.listen();
-  HVC_GetVersion();
-
   for (gameB_count = 0; gameB_count < 3; gameB_count ++) {
-    mode_select_frag = 0;
+
     kk = 1;
     uu = 1;
     unit();
@@ -1163,38 +1240,24 @@ void gameB() {
     digitalWrite(PIN_IN3, LOW);
     digitalWrite(PIN_IN4, HIGH);
 
-    while ( nB < 3 ) {
-      mp3.listen();
-      SpecifyfolderPlay(8, 40); //mp3再生（フォルダ，番号）//「好きなところを触ってね」
-      delay(1000);
+    mp3.listen();
+    SpecifyfolderPlay(8, 40); //mp3再生（フォルダ，番号）//「好きなところを触ってね」
+    delay(1000);
 
-      while ( nnB < 250 ) {
-        Touch_sensing();
-        if (mode_select_frag == 1) {
-          nB = 3;
-          break;
-        }
-        nnB++;
-      }
+    touch_sensing_number = mage_sensor();
+    Serial.print(touch_sensing_number);
 
-      nnB = 0;
-      nB++;
+    mp3.listen();
+    SpecifyfolderPlay(8, array_B[touch_sensing_number][0]); //押された箇所によってドレミファソラシドのどれかがなる
+    kk = array_B[touch_sensing_number][1];//色
+    uu = 2;
+    unit();
+    touch_count++;
+    delay(1000);
+    LED_STOP();
+    touch_sensing_number = 0;
+    delay(500);
     }
-    nB = 0;
-
-    if (mode_select_frag == 1) {
-      mp3.listen();
-      SpecifyfolderPlay(8, array_B[touch_sensing_number][0]); //押された箇所によってドレミファソラシドのどれかがなる
-      kk = array_B[touch_sensing_number][1];//色
-      uu = 2;
-      unit();
-      touch_count++;
-      delay(1000);
-      LED_STOP();
-      touch_sensing_number = 0;
-      delay(500);
-    }
-  }
 
   if ( touch_count == 0 ) {
     feel_sad_1();
@@ -1209,15 +1272,11 @@ void gameB() {
     feel_happy_1();
   }
 }
-*/
+
 /********************************************************************************************************遊びC  音に合わせて踊る（5曲中1曲ランダムに流れる）********************************************************************************************************/
-/*
 void gameC() {
   int music_servo;
-  int nC;
   int music_list = random( 6 );
-  mySerial.listen();
-  HVC_GetVersion();
 
   int array_C[5][4] = {{27, 3, 8, 8}, {26, 2, 7, 7}, {29, 4, 5, 6}, {30, 2, 7, 8}, {28, 2, 3, 8}};
 
@@ -1362,7 +1421,8 @@ void gameC() {
 
   LED_STOP();
   teisi();
-}*/
+}
+
 /********************************************************************************************************遊びD (riddle, なぞなぞ)********************************************************************************************************/
 /*
 void gameD_start() {
@@ -1630,6 +1690,109 @@ void gameF() {
   }
 }
 */
+
+/********************************************************************************************************遊びG (色遊び進化ver)********************************************************************************************************/
+void gameG() {
+
+  int gameG_count;
+  int gameG_count_2;
+  int touch_count = 0;
+  int tp;
+  int sensorValue1;
+  int sensorValue2;
+  kk = 1;
+  uu = 2;
+  unit();
+  analogWrite(PIN_VREF, 60);
+  analogWrite(PIN_VREF2, 180);
+  digitalWrite(PIN_IN1, LOW);
+  digitalWrite(PIN_IN2, HIGH);
+  digitalWrite(PIN_IN3, LOW);
+  digitalWrite(PIN_IN4, HIGH);
+  mp3.listen();
+  SpecifyfolderPlay(8, 40); //mp3再生（フォルダ，番号）//「好きなところを触ってね」
+
+  for (gameG_count = 0; gameG_count < 20; gameG_count ++) 
+  {
+    // 曲げセンサーの値を取得
+    sensorValue1 = analogRead(sensorPin1);
+    sensorValue2 = analogRead(sensorPin2);
+    Serial.println("sensorValue1");
+    Serial.println(sensorValue1);
+    Serial.println("sensorValue2");
+    Serial.println(sensorValue2);
+
+    if (max((sensorValue1-ave_sensorValue1), (sensorValue2-ave_sensorValue2)) > 200)
+    {
+      kk = 1;                                                                 //kk = 1:緑　2:赤　3:青 4:黄（黄緑）5:水色　6:ピンク　7:紫　8:オレンジ 9:黄緑
+      unit();
+    }
+
+    else if (max((sensorValue1-ave_sensorValue1), (sensorValue2-ave_sensorValue2)) > 180) 
+    {
+      kk = 2;                                                                 
+      unit();
+    }
+
+    else if (max((sensorValue1-ave_sensorValue1), (sensorValue2-ave_sensorValue2)) > 160) 
+    {
+      kk = 3;                                                                 
+      unit();
+    }
+
+    else if (max((sensorValue1-ave_sensorValue1), (sensorValue2-ave_sensorValue2)) > 140) 
+    {
+      kk = 4;                                                                 
+      unit();
+    }
+
+    else if (max((sensorValue1-ave_sensorValue1), (sensorValue2-ave_sensorValue2)) > 120) 
+    {
+      kk = 5;                                                                 
+      unit();
+    }
+
+    else if (max((sensorValue1-ave_sensorValue1), (sensorValue2-ave_sensorValue2)) > 90) 
+    {
+      kk = 6;                                                                 
+      unit();
+    }
+
+    else if (max((sensorValue1-ave_sensorValue1), (sensorValue2-ave_sensorValue2)) > 60) 
+    {
+      kk = 7;                                                                 
+      unit();
+    }
+
+    else if (max((sensorValue1-ave_sensorValue1), (sensorValue2-ave_sensorValue2)) > 30) 
+    {
+      kk = 8;                                                                 
+      unit();
+    }
+
+    else
+    {
+      kk = 9;
+      unit();
+    }
+    delay(1000);
+  }
+}
+    
+
+  /* if ( touch_count == 0 ) {
+    feel_sad_1();
+  }
+  else if ( touch_count == 1 ) {
+    feel_sad_2();
+  }
+  else if ( touch_count == 2) {
+    feel_happy_2();
+  }
+  else if ( touch_count == 3) {
+    feel_happy_1();
+  }*/
+
 /*****************************************************************************************************************************起動時に実行される関数***************************************************************************************************************/
 void setup() {
 
@@ -1638,29 +1801,29 @@ void setup() {
   Serial.begin( 9600 );
   randomSeed(analogRead(0));
   init_PFC(); //ピン出力設定
+  mage_sensor_setup();
 
- /* while (!Serial) { // needed to keep leonardo/micro from starting too fast!
+  while (!Serial) { // needed to keep leonardo/micro from starting too fast!
     delay(10);
-  }*/
+  }
   delay(100);
   SelectPlayerDevice(0x02);       // SDカードを指定
   SetVolume(0x04);                 //スピーカーの音量を設定(本番は0x10)
-  //init_mpr(); //静電容量センサ初期化
 
   setled(); //LED初期化
 
   randomSeed(analogRead(0));
 
   /*前回のデータを出力*/
-  delay(10000);
-  /*for (int times = 0; times < 1000; times++) {
+  /* delay(10000);
+    for (int times = 0; times < 1000; times++) {
     data_aaa = EEPROM.read(times);
     Serial.print ( times );
     Serial.print ( "：" );
     Serial.print ( data_aaa );
     Serial.print ( "\n" );
   }*/
-  delay(5000);
+  //delay(5000);
 }
   /*EEPROM初期化*/
  /* for (times = 0; times < 1000; times++) {
@@ -1680,14 +1843,49 @@ void loop()
   /*  1,0.6,0.2でweightをつける  */
   int n;
   int a = 0, b = 0, c = 0;
+  Serial.write("1");
+  int h = 6; //random( 3 );
+  Serial.write("2");
 
-    int h = 0; //random( 3 );
+  if (h == 0) 
+  {
+    servo_init_posi();
+    gameA();  //遊びAを行う．
+  }
 
-   /* if (h == 0) {
-      servo_init_posi();
-      gameA();  //遊びAを行う．
-    }*/
-    setled();
+  else if (h == 1) 
+  {
+    servo_init_posi();
+    gameB();  //遊びBを行う．
+  }
+  else if (h == 2) 
+  {
+    servo_init_posi();
+    gameC();  //遊びCを行う．
+  }
+
+  /*else if (h == 3) 
+  {
+    servo_init_posi();
+    gameD();  //遊びDを行う．
+  }
+
+  else if (h == 4) 
+  {
+    servo_init_posi();
+    gameE();  //遊びEを行う．
+  }
+  else if (h == 5) 
+  {
+    servo_init_posi();
+    gameF();  //遊びFを行う．
+  }*/
+
+  else if (h == 6) 
+  {
+    servo_init_posi();
+    gameG();  //遊びGを行う．
+  }
 }
 
 
