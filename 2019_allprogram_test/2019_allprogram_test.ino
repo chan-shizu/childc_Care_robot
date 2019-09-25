@@ -1428,33 +1428,26 @@ void gameC() {
 void gameD_start() {
   //DCモータとLED起動
   //頭：赤　身体：緑　右腕：紫　尻尾：青　左腕：黄
-
   //左腕
   RGBLED1.setPixelColor( 0, RGBLED1.Color( hana[8][0] , hana[8][1], hana[8][2]) );
   RGBLED2.setPixelColor( 0, RGBLED2.Color( hana[8][0] , hana[8][1], hana[8][2]) );
   RGBLED3.setPixelColor( 0, RGBLED3.Color( hana[8][0] , hana[8][1], hana[8][2]) );
-
   //指定なし
   RGBLED4.setPixelColor( 0, RGBLED4.Color( hana[4][0] , hana[4][1], hana[4][2]) );
-
   //尻尾
   RGBLED5.setPixelColor( 0, RGBLED5.Color( hana[3][0] , hana[3][1], hana[3][2]) );
   RGBLED6.setPixelColor( 0, RGBLED6.Color( hana[3][0] , hana[3][1], hana[3][2]) );
-
   //身体・中
   RGBLED7.setPixelColor( 0, RGBLED7.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED8.setPixelColor( 0, RGBLED8.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED9.setPixelColor( 0, RGBLED9.Color( hana[1][0] , hana[1][1], hana[1][2]) );
-
   //頭
   RGBLED10.setPixelColor( 0, RGBLED10.Color( hana[2][0] , hana[2][1], hana[2][2]) );
   RGBLED11.setPixelColor( 0, RGBLED11.Color( hana[2][0] , hana[2][1], hana[2][2]) );
-
   //右腕
   RGBLED12.setPixelColor( 0, RGBLED12.Color( hana[7][0] , hana[7][1], hana[7][2]) );
   RGBLED13.setPixelColor( 0, RGBLED13.Color( hana[7][0] , hana[7][1], hana[7][2]) );
   RGBLED14.setPixelColor( 0, RGBLED14.Color( hana[7][0] , hana[7][1], hana[7][2]) );
-
   //身体・上下
   RGBLED15.setPixelColor( 0, RGBLED15.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED16.setPixelColor( 0, RGBLED16.Color( hana[1][0] , hana[1][1], hana[1][2]) );
@@ -1462,48 +1455,36 @@ void gameD_start() {
   RGBLED18.setPixelColor( 0, RGBLED18.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED19.setPixelColor( 0, RGBLED19.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED20.setPixelColor( 0, RGBLED20.Color( hana[1][0] , hana[1][1], hana[1][2]) );
-
   LED_START();
-
   analogWrite(PIN_VREF, 60);
   analogWrite(PIN_VREF2, 180);
   digitalWrite(PIN_IN1, LOW);
   digitalWrite(PIN_IN2, HIGH);
   digitalWrite(PIN_IN3, LOW);
   digitalWrite(PIN_IN4, HIGH);
-
 }
-
 void gameD() {
-
   int gameD_count;
   int riddle_num;
-
   for (gameD_count = 0; gameD_count < 3; gameD_count ++) {
-
     riddle_num = random( 9 );
     gameD_start();
-
     if(gameD_count == 0) 
     {
       mp3.listen();
       SpecifyfolderPlay(何かしらの番号); //なぞなぞ遊びをはじめるよ
     }
-
     else
     {
       mp3.listen();
       SpecifyfolderPlay(何かしらの番号); //次のなぞなぞは何かな, 的な
     }
-
     delay(3000);
     mp3.listen();
     SpecifyfolderPlay(9, riddle_num); //なぞなぞ(みんなが好きなスポーツは?みたいな)
     delay(2000);
-
     mp3.listen();
     SpecifyfolderPlay(何かしらの番号); //よく考えてね, 的な
-
     mp3.listen();
     SpecifyfolderPlay(10, riddle_num);//答えは, ~だよ
   }
@@ -1514,33 +1495,26 @@ void gameD() {
 void gameE_start() {
   //DCモータとLED起動
   //頭：赤　身体：緑　右腕：紫　尻尾：青　左腕：黄
-
   //左腕
   RGBLED1.setPixelColor( 0, RGBLED1.Color( hana[8][0] , hana[8][1], hana[8][2]) );
   RGBLED2.setPixelColor( 0, RGBLED2.Color( hana[8][0] , hana[8][1], hana[8][2]) );
   RGBLED3.setPixelColor( 0, RGBLED3.Color( hana[8][0] , hana[8][1], hana[8][2]) );
-
   //指定なし
   RGBLED4.setPixelColor( 0, RGBLED4.Color( hana[4][0] , hana[4][1], hana[4][2]) );
-
   //尻尾
   RGBLED5.setPixelColor( 0, RGBLED5.Color( hana[3][0] , hana[3][1], hana[3][2]) );
   RGBLED6.setPixelColor( 0, RGBLED6.Color( hana[3][0] , hana[3][1], hana[3][2]) );
-
   //身体・中
   RGBLED7.setPixelColor( 0, RGBLED7.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED8.setPixelColor( 0, RGBLED8.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED9.setPixelColor( 0, RGBLED9.Color( hana[1][0] , hana[1][1], hana[1][2]) );
-
   //頭
   RGBLED10.setPixelColor( 0, RGBLED10.Color( hana[2][0] , hana[2][1], hana[2][2]) );
   RGBLED11.setPixelColor( 0, RGBLED11.Color( hana[2][0] , hana[2][1], hana[2][2]) );
-
   //右腕
   RGBLED12.setPixelColor( 0, RGBLED12.Color( hana[7][0] , hana[7][1], hana[7][2]) );
   RGBLED13.setPixelColor( 0, RGBLED13.Color( hana[7][0] , hana[7][1], hana[7][2]) );
   RGBLED14.setPixelColor( 0, RGBLED14.Color( hana[7][0] , hana[7][1], hana[7][2]) );
-
   //身体・上下
   RGBLED15.setPixelColor( 0, RGBLED15.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED16.setPixelColor( 0, RGBLED16.Color( hana[1][0] , hana[1][1], hana[1][2]) );
@@ -1548,33 +1522,25 @@ void gameE_start() {
   RGBLED18.setPixelColor( 0, RGBLED18.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED19.setPixelColor( 0, RGBLED19.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED20.setPixelColor( 0, RGBLED20.Color( hana[1][0] , hana[1][1], hana[1][2]) );
-
   LED_START();
-
   analogWrite(PIN_VREF, 60);
   analogWrite(PIN_VREF2, 180);
   digitalWrite(PIN_IN1, LOW);
   digitalWrite(PIN_IN2, HIGH);
   digitalWrite(PIN_IN3, LOW);
   digitalWrite(PIN_IN4, HIGH);
-
 }
-
 void gameE() {
   int gameE_count;
   int gokko_num;
-
   for (gameE_count = 0; gameE_count < 3; gameE_count ++) {
-
     gokko_num = random( 9 );
     gameE_start();
-
     if(gameE_count == 0)
     {
       mp3.listen();
       SpecifyfolderPlay(何かしらの番号); //「ごっこ遊びをはじめるよ」
     }
-
     else
     {
       mp3.listen();
@@ -1585,13 +1551,10 @@ void gameE() {
     mp3.listen();
     SpecifyfolderPlay(11, gokko_num); //~のまねをしてみよう
     delay(2000);
-
     mp3.listen();
     SpecifyfolderPlay(何かしらの番号); //恥ずかしがらないで
-
     mp3.listen();
     SpecifyfolderPlay(12, riddle_num); //僕だったらこんな風にまねするな
-
   }
 }*/
 
@@ -1600,33 +1563,26 @@ void gameE() {
 void gameF_start() {
   //DCモータとLED起動
   //頭：赤　身体：緑　右腕：紫　尻尾：青　左腕：黄
-
   //左腕
   RGBLED1.setPixelColor( 0, RGBLED1.Color( hana[8][0] , hana[8][1], hana[8][2]) );
   RGBLED2.setPixelColor( 0, RGBLED2.Color( hana[8][0] , hana[8][1], hana[8][2]) );
   RGBLED3.setPixelColor( 0, RGBLED3.Color( hana[8][0] , hana[8][1], hana[8][2]) );
-
   //指定なし
   RGBLED4.setPixelColor( 0, RGBLED4.Color( hana[4][0] , hana[4][1], hana[4][2]) );
-
   //尻尾
   RGBLED5.setPixelColor( 0, RGBLED5.Color( hana[3][0] , hana[3][1], hana[3][2]) );
   RGBLED6.setPixelColor( 0, RGBLED6.Color( hana[3][0] , hana[3][1], hana[3][2]) );
-
   //身体・中
   RGBLED7.setPixelColor( 0, RGBLED7.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED8.setPixelColor( 0, RGBLED8.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED9.setPixelColor( 0, RGBLED9.Color( hana[1][0] , hana[1][1], hana[1][2]) );
-
   //頭
   RGBLED10.setPixelColor( 0, RGBLED10.Color( hana[2][0] , hana[2][1], hana[2][2]) );
   RGBLED11.setPixelColor( 0, RGBLED11.Color( hana[2][0] , hana[2][1], hana[2][2]) );
-
   //右腕
   RGBLED12.setPixelColor( 0, RGBLED12.Color( hana[7][0] , hana[7][1], hana[7][2]) );
   RGBLED13.setPixelColor( 0, RGBLED13.Color( hana[7][0] , hana[7][1], hana[7][2]) );
   RGBLED14.setPixelColor( 0, RGBLED14.Color( hana[7][0] , hana[7][1], hana[7][2]) );
-
   //身体・上下
   RGBLED15.setPixelColor( 0, RGBLED15.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED16.setPixelColor( 0, RGBLED16.Color( hana[1][0] , hana[1][1], hana[1][2]) );
@@ -1634,30 +1590,21 @@ void gameF_start() {
   RGBLED18.setPixelColor( 0, RGBLED18.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED19.setPixelColor( 0, RGBLED19.Color( hana[1][0] , hana[1][1], hana[1][2]) );
   RGBLED20.setPixelColor( 0, RGBLED20.Color( hana[1][0] , hana[1][1], hana[1][2]) );
-
   LED_START();
-
   analogWrite(PIN_VREF, 60);
   analogWrite(PIN_VREF2, 180);
   digitalWrite(PIN_IN1, LOW);
   digitalWrite(PIN_IN2, HIGH);
   digitalWrite(PIN_IN3, LOW);
   digitalWrite(PIN_IN4, HIGH);
-
 }
-
 void gameF() {
-
   int story_num;
-
   story_num = random( 3 );
   gameF_start();
-
-
   mp3.listen();
   SpecifyfolderPlay(8, 47); //mp3再生「色を触ってね」
   delay(2000);
-
   if(story_num == 0)
   {
     mp3.listen();
@@ -1676,7 +1623,6 @@ void gameF() {
     SpecifyfolderPlay(14, 2);
     mp3.listen();
     SpecifyfolderPlay(14, 3);
-
   }
   
   else if (story_num)
@@ -1808,7 +1754,7 @@ void setup() {
   }
   delay(100);
   SelectPlayerDevice(0x02);       // SDカードを指定
-  SetVolume(0x04);                 //スピーカーの音量を設定(本番は0x10)
+  SetVolume(0x10);                 //スピーカーの音量を設定(本番は0x10)
 
   setled(); //LED初期化
 
@@ -1827,9 +1773,7 @@ void setup() {
 }
   /*EEPROM初期化*/
  /* for (times = 0; times < 1000; times++) {
-
     EEPROM.write(times, 255);
-
   }
   //times = 0;
   //Serial.write("set_up") //raspberry pi にset up が終わったことを通知
@@ -1844,15 +1788,14 @@ void loop()
   int n;
   int a = 0, b = 0, c = 0;
   Serial.write("1");
-  int h = 6; //random( 3 );
+  //int h = 6; //random( 3 );
   Serial.write("2");
 
-  if (h == 0) 
+  /*if (h == 0) 
   {
     servo_init_posi();
     gameA();  //遊びAを行う．
   }
-
   else if (h == 1) 
   {
     servo_init_posi();
@@ -1863,13 +1806,11 @@ void loop()
     servo_init_posi();
     gameC();  //遊びCを行う．
   }
-
-  /*else if (h == 3) 
+  else if (h == 3) 
   {
     servo_init_posi();
     gameD();  //遊びDを行う．
   }
-
   else if (h == 4) 
   {
     servo_init_posi();
@@ -1879,14 +1820,15 @@ void loop()
   {
     servo_init_posi();
     gameF();  //遊びFを行う．
-  }*/
-
+  }
   else if (h == 6) 
   {
     servo_init_posi();
     gameG();  //遊びGを行う．
-  }
+  }*/
+
+  mp3.listen();
+  SpecifyfolderPlay(8, 40);
+  delay(10000);
+  Serial.write("3");
 }
-
-
-  
