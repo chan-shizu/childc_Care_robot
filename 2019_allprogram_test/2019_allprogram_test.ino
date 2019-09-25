@@ -20,17 +20,22 @@
 // Arduinoにぶら下がっているRGBLEDの個数
 #define NUMRGBLED        20
 
-int touch_sensing_number = 9;
+//int touch_sensing_number = 9; 曲げセンサ使うから必要なし
 int timer = 0;
-float ave_sensorValue1;
-float ave_sensorValue2;
+float ave_sensorValue1; //右腕の曲げセンサ
+float ave_sensorValue2; //右腕の曲げセンサ
+float ave_sensorValue3; //左腕の曲げセンサ
+float ave_sensorValue4; //左腕の曲げセンサ
+float ave_sensorValue5; //尻尾の曲げセンサ
+float ave_sensorValue6; //尻尾の曲げセンサ
 
 //サーボモータ(Servoオブジェクトの宣言)
-Servo myservo1;
-Servo myservo2;
-Servo myservo3;
-Servo myservo4;
-Servo myservo5;
+Servo myservo1; //右腕
+Servo myservo2; //左腕
+Servo myservo3; //首
+Servo myservo4; //頭
+Servo myservo5; //尻尾
+Servo myservo6; //角
 
 //Adafruit_MPR121 MPR121;
 
@@ -53,17 +58,16 @@ Servo myservo5;
 #define LED2 43
 #define LED3 44
 
-#define LED4 48 //設定なし
+#define LED5 48 //尻尾
+#define LED6 49 
+#define LED4 50
 
-#define LED5 49 //尻尾
-#define LED6 50
+#define LED7 39  //身体・真ん中
+#define LED8 33
+#define LED9 34
 
-#define LED7 10  //身体・真ん中
-#define LED8 11
-#define LED9 12
-
-#define LED10 16  //頭
-#define LED11 17
+#define LED10 40  //頭
+#define LED11 41
 
 #define LED12 45  //右腕
 #define LED13 46
@@ -73,15 +77,19 @@ Servo myservo5;
 #define LED16 52
 #define LED17 53
 
-#define LED18 13  //身体・下
-#define LED19 14
-#define LED20 15
+#define LED18 30  //身体・下
+#define LED19 31
+#define LED20 32
 
 #define NUM_LEDS 20
 #define BRIGHTNESS 50 //LED明るさ
 
 #define sensorPin1 A2
-#define sensorPin2 A1
+#define sensorPin2 A3
+#define sensorPin3 A4
+#define sensorPin4 A5
+#define sensorPin5 A6
+#define sensorPin6 A7
 
 //MP3　ピン番号
 SoftwareSerial mp3(19, 18);
@@ -117,15 +125,6 @@ Adafruit_NeoPixel RGBLED19 = Adafruit_NeoPixel(NUM_LEDS, LED19, NEO_GRBW + NEO_K
 Adafruit_NeoPixel RGBLED20 = Adafruit_NeoPixel(NUM_LEDS, LED20, NEO_GRBW + NEO_KHZ800);
 
 /*************************************************************ピン出力設定（起動時に実行）***************************************************************/
-void init_PFC() {
-  pinMode( 27, OUTPUT );
-  pinMode( 28, OUTPUT );
-  pinMode( 29, OUTPUT );
-  pinMode(PIN_IN1, OUTPUT);
-  pinMode(PIN_IN2, OUTPUT);
-  pinMode(PIN_IN3, OUTPUT);
-  pinMode(PIN_IN4, OUTPUT);
-}
 
 byte neopix_gamma[] = {
   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -675,19 +674,28 @@ void servo_head() {
   myservo4.detach();
 }
 
+/*****************************************************************************************************************************サーボモータ角***************************************************************************************************************/
+void servo_head() {
+  myservo6.attach(10); //5番ピンをサーボモーターの出力ピンとして設定
+
+  myservo6.detach();
+}
+
 /*****************************************************************************************************************************サーボモータの位置の初期化***************************************************************************************************************/
 void servo_init_posi() {
-  myservo1.attach(8); //8番ピンをサーボモーターの出力ピンとして設定*/
-  myservo2.attach(7); //7番ピンをサーボモーターの出力ピンとして設定*/
-  myservo5.attach(4); //4番ピンをサーボモーターの出力ピンとして設定*/
+  myservo1.attach(8); //8番ピンをサーボモーターの出力ピンとして設定
+  myservo2.attach(7); //7番ピンをサーボモーターの出力ピンとして設定
+  myservo5.attach(4); //4番ピンをサーボモーターの出力ピンとして設定
   myservo3.attach(6); //6番ピンをサーボモーターの出力ピンとして設定
   myservo4.attach(5); //5番ピンをサーボモーターの出力ピンとして設定
+  myservo6.attach(10); //10番ピンをサーボモーターの出力ピンとして設定
 
   myservo1.write(90);
   myservo2.write(90);
   myservo5.write(90);
   myservo3.write(60);
   myservo4.write(45);
+  myservo6.write(45);
   delay(500);
 
   myservo1.detach();
@@ -695,6 +703,7 @@ void servo_init_posi() {
   myservo5.detach();
   myservo3.detach();
   myservo4.detach();
+  myservo6.detach();
 }
 
 /*****************************************************************************************************************************温度を検知する関数***************************************************************************************************************/
