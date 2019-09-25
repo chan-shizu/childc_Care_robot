@@ -1,5 +1,5 @@
 import numpy as np
-from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.externals import joblib
 import csv
 import matplotlib.pyplot as plt
@@ -16,9 +16,9 @@ path3 =
 # for desktop pc(university)
 path1 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\過去論文遊びの好み.csv"    
 path2 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\0511camera_matome.csv"
-path3 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\multiple_regression_analysis.csv"
+path3 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\random_forest_regression_analysis.csv"
 #path4 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\clf_data.pkl"
-path5 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\analysis_result.csv"
+path5 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\random_forest_analysis_result.csv"
 
 def main():
     analysis_score = []
@@ -52,7 +52,7 @@ def main():
             np.reshape(test_preference, (1, 5))
 
             #重回帰分析モデルの生成
-            model = LinearRegression()
+            model = RandomForestRegressor(n_jobs=-1, random_state=2525)
 
             #モデルの学習(最適なパラメータを求める)
             model.fit(training_preference, training_personality)
@@ -60,10 +60,10 @@ def main():
 
             #調整されたパラメータを見る
             print(i)
-            print("model.coef_")
-            print(model.coef_)
-            print("model.intercept_")
-            print(model.intercept_)
+            #print("model.coef_")
+            #print(model.coef_)
+            #print("model.intercept_")
+            #print(model.intercept_)
             print("score(0.5以上が目安)")
             print(model.score(training_preference, training_personality))
 
@@ -73,7 +73,7 @@ def main():
             #np.savetxt(path3,model.score(training_preference, training_personality))
             analysis_score.append(model.score(training_preference, training_personality))
         
-            path4 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\clf_data{}.pkl".format(i)
+            path4 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\random_forest_clf_data{}.pkl".format(i)
             joblib.dump(model, path4) #学習データを保存
 
         writer.writerow(analysis_score)
@@ -95,7 +95,7 @@ def fit_analysis():
         print(df)
         df = df.reshape(1,-1)
         print(df)
-        path4 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\clf_data{}.pkl".format(i)
+        path4 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\random_forest_clf_data{}.pkl".format(i)
         model = joblib.load(path4) #過去の学習データ(遊びの好みと性格の関係)をロードする
         predict = model.predict(df) #学習データから数値を予測する
         print(predict)
@@ -114,8 +114,8 @@ def fit_analysis():
     plt.ylabel("figures") #y軸のラベル
     plt.grid(True) #格子表示
     #plt.show() #画像表示
-    plt.savefig("C:\\Users\\bubbl\\OneDrive\\Desktop\\chart.jpg") #画像保存
-    line_camera_faceAPI.line_photo_picture("C:\\Users\\bubbl\\OneDrive\\Desktop\\chart.jpg") #ラインにグラフの画像を送信
+    plt.savefig("C:\\Users\\bubbl\\OneDrive\\Desktop\\random_forest_chart.jpg") #画像保存
+    line_camera_faceAPI.line_photo_picture("C:\\Users\\bubbl\\OneDrive\\Desktop\\random_forest_chart.jpg") #ラインにグラフの画像を送信
 
 if __name__ == "__main__":
     #main()

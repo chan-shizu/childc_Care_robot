@@ -4,6 +4,16 @@ from sklearn.externals import joblib
 import csv
 import matplotlib.pyplot as plt
 import line_camera_faceAPI
+import pandas as pds
+from keras.models import Sequential
+from keras.layers import Input, Dense, Dropout, BatchNormalization
+from keras.wrappers.scikit_learn import KerasRegressor
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import mean_squared_error
 
 print("start")
 
@@ -16,9 +26,30 @@ path3 =
 # for desktop pc(university)
 path1 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\過去論文遊びの好み.csv"    
 path2 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\0511camera_matome.csv"
-path3 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\multiple_regression_analysis.csv"
+path3 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\deeplearning_analysis.csv"
 #path4 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\clf_data.pkl"
-path5 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\analysis_result.csv"
+path5 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\deeplearning_analysis_result.csv"
+
+def reg_model():
+    model = Sequential()
+    model.add(Dense(10, input_dim=5, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.2))
+    model.add(Dense(256, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.2))
+    model.add(Dense(128, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.2))
+    model.add(Dense(64, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Dropout(0.2))
+    model.add(Dense(1))
+
+    #compile model
+    model.compile(loss='mean_squared_error', optimizer='adam')
+    model.summary()
+    return model
 
 def main():
     analysis_score = []
@@ -51,19 +82,18 @@ def main():
                             )
             np.reshape(test_preference, (1, 5))
 
-            #重回帰分析モデルの生成
-            model = LinearRegression()
-
-            #モデルの学習(最適なパラメータを求める)
+            seed = len(training_personality)
+            np.random.seed(seed)
+            model = KerasRegressor(build_fn=reg_model, epochs=100, batch_size=10, verbose=0)
             model.fit(training_preference, training_personality)
-                #LinearRegression(copy_X=True, fit_intercept=True, n_jobs=None,normalize=False)
+            #kfold = KFold(n_splits=10, random_state=seed)
 
             #調整されたパラメータを見る
-            print(i)
-            print("model.coef_")
-            print(model.coef_)
-            print("model.intercept_")
-            print(model.intercept_)
+            #print(i)
+            #print("model.coef_")
+            #print(model.coef_)
+            #print("model.intercept_")
+            #print(model.intercept_)
             print("score(0.5以上が目安)")
             print(model.score(training_preference, training_personality))
 
@@ -73,7 +103,7 @@ def main():
             #np.savetxt(path3,model.score(training_preference, training_personality))
             analysis_score.append(model.score(training_preference, training_personality))
         
-            path4 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\clf_data{}.pkl".format(i)
+            path4 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\deeplearning_clf_data{}.pkl".format(i)
             joblib.dump(model, path4) #学習データを保存
 
         writer.writerow(analysis_score)
@@ -95,11 +125,11 @@ def fit_analysis():
         print(df)
         df = df.reshape(1,-1)
         print(df)
-        path4 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\clf_data{}.pkl".format(i)
+        path4 = "C:\\Users\\bubbl\\OneDrive\\Desktop\\facial_expression_data\\deeplearning_clf_data{}.pkl".format(i)
         model = joblib.load(path4) #過去の学習データ(遊びの好みと性格の関係)をロードする
         predict = model.predict(df) #学習データから数値を予測する
         print(predict)
-        analysis_score.append(predict[0])
+        analysis_score.append(predict)
         name = "p{}".format(i-6)
         personality_number.append(name)
 
@@ -114,9 +144,9 @@ def fit_analysis():
     plt.ylabel("figures") #y軸のラベル
     plt.grid(True) #格子表示
     #plt.show() #画像表示
-    plt.savefig("C:\\Users\\bubbl\\OneDrive\\Desktop\\chart.jpg") #画像保存
-    line_camera_faceAPI.line_photo_picture("C:\\Users\\bubbl\\OneDrive\\Desktop\\chart.jpg") #ラインにグラフの画像を送信
+    plt.savefig("C:\\Users\\bubbl\\OneDrive\\Desktop\\deeplearning_chart.jpg") #画像保存
+    line_camera_faceAPI.line_photo_picture("C:\\Users\\bubbl\\OneDrive\\Desktop\\deeplearning_chart.jpg") #ラインにグラフの画像を送信
 
 if __name__ == "__main__":
-    #main()
+    main()
     fit_analysis()
